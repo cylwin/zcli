@@ -1,68 +1,74 @@
 {
-  "name": "zcli-monorepo",
+  "name": "@zendesk/zcli",
   "description": "Zendesk cli is a single command line tool for all your zendesk needs",
-  "version": "0.0.1",
+  "version": "1.0.0-beta.23",
   "author": "@vegemite",
-  "private": true,
-  "workspaces": [
-    "packages/*"
+  "npmRegistry": "https://registry.npmjs.org",
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "zcli": "./bin/run"
+  },
+  "dependencies": {
+    "@oclif/core": "^1.24.0",
+    "@oclif/plugin-autocomplete": "1.3.0",
+    "@oclif/plugin-help": "5.1.12",
+    "@oclif/plugin-not-found": "2.3.1",
+    "@oclif/plugin-update": "3.0.0",
+    "@oclif/plugin-warn-if-update-available": "2.0.4",
+    "@zendesk/zcli-apps": "^1.0.0-beta.23",
+    "@zendesk/zcli-core": "^1.0.0-beta.23",
+    "chalk": "^4.1.2",
+    "tslib": "^2.4.0"
+  },
+  "overrides": {
+    "@oclif/core": "1.24.0"
+  },
+  "files": [
+    "/bin",
+    "/src",
+    "/dist",
+    "/oclif.manifest.json",
+    "/npm-shrinkwrap.json"
   ],
-  "devDependencies": {
-    "@oclif/core": "^1.11.0",
-    "@oclif/test": "^2.1.0",
-    "@types/chai": "^4",
-    "@types/express": "^4.17.3",
-    "@types/mocha": "^9.1.1",
-    "@types/node": "^14.0.14",
-    "@types/rimraf": "^3.0.2",
-    "@typescript-eslint/eslint-plugin": "^5.30.0",
-    "@typescript-eslint/parser": "^5.30.0",
-    "chai": "^4",
-    "eslint": "^8.18.0",
-    "eslint-config-standard": "^17.0.0",
-    "eslint-plugin-import": "2",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.0.0",
-    "form-data": "^4.0.0",
-    "lerna": "^5.1.8",
-    "lerna-changelog": "^2.2.0",
-    "mocha": "^10.0.0",
-    "nock": "^13.2.8",
-    "nyc": "^15.1.0",
-    "rimraf": "^3.0.2",
-    "standard": "^17.0.0",
-    "ts-node": "^10.9.1",
-    "typescript": "~4.7.4",
-    "yarn-audit-fix": "^9.3.1"
-  },
-  "engines": {
-    "node": ">=14.17.3"
-  },
   "keywords": [
     "zcli",
     "zendesk",
     "command",
     "cli"
   ],
-  "scripts": {
-    "audit:fix": "yarn-audit-fix",
-    "postinstall": "lerna bootstrap",
-    "dev": "ts-node ./packages/zcli/bin/run",
-    "git:check": "./scripts/git_check.sh",
-    "link:bin": "bash ./scripts/link_dev.sh",
-    "lint": "eslint . --ext .ts --config .eslintrc",
-    "test": "nyc --extension .ts mocha --config=.mocharc.json --forbid-only packages/**/src/**/*.test.ts",
-    "test:functional": "mocha --config=.mocharc.json -r ts-node/register packages/**/tests/**/*.test.ts",
-    "changelog": "lerna-changelog",
-    "type:check": "lerna run type:check"
-  },
-  "license": "Apache-2.0",
-  "licenses": [
-    {
-      "type": "Apache-2.0",
-      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+  "license": "MIT",
+  "main": "dist/index.js",
+  "oclif": {
+    "commands": "./dist/commands",
+    "bin": "zcli",
+    "plugins": [
+      "@oclif/plugin-help",
+      "@oclif/plugin-autocomplete",
+      "@oclif/plugin-not-found",
+      "@oclif/plugin-warn-if-update-available",
+      "@zendesk/zcli-apps"
+    ],
+    "warn-if-update-available": {
+      "timeoutInDays": 7,
+      "message": "<%= config.name %> update available from <%= chalk.greenBright(config.version) %> to <%= chalk.greenBright(latest) %>."
+    },
+    "topics": {
+      "apps": {
+        "description": "manage Zendesk apps workflow"
+      },
+      "profiles": {
+        "description": "manage cli user profiles"
+      }
     }
-  ],
-  "repository": "zendesk/zcli",
-  "types": "lib/index.d.ts"
+  },
+  "scripts": {
+    "install:zcli": "rimraf package-lock.json && npm link",
+    "prepack": "tsc && ../../scripts/prepack.sh",
+    "postpack": "rm -f oclif.manifest.json npm-shrinkwrap.json && rm -rf ./dist && git checkout ./package.json",
+    "type:check": "tsc"
+  },
+  "types": "src/index.d.ts",
+  "gitHead": "e7ecd7147efe526fe2296119d8c2785513ae1a30"
 }
